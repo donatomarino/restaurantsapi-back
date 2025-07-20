@@ -1,0 +1,164 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Restaurant;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
+
+class RestaurantController extends Controller
+{
+    /**
+     * Listar todos 
+     * @author Donato Marino 
+     *      
+     * @return JsonResponse
+     * 
+     * @
+     */
+    public function index()
+    {
+        try {
+            $restaurants = Restaurant::all();
+            return response()->json($restaurants);
+        } catch (\Exception $e) {
+            Log::error('Error al sacar restaurantes: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Ocurrió un error al sacar los restaurantes'
+            ], 500);
+        }
+    }
+
+    /**
+     * Añadir nuevo
+     * @author Donato Marino
+     * 
+     * @param Request $request -> Contiene el nombre, dirección y telefono.
+     * 
+     * @return JsonResponse
+     */
+    public function store(Request $request)
+    {
+        try {
+            // Comprobar que se pasen todos los campos obligatorios
+            $newRestaurantData = $request->validate([
+                'name' => 'required|string',
+                'address' => 'required|string',
+                'phone' => 'required|string',
+            ], [
+                'name.required' => 'El nombre es obligatorio',
+                'address.required' => 'La dirección es obligatoria',
+                'phone.required' => 'El telefono es obligatorio'
+            ]);
+
+            // Verificar si el restaurante ya existe
+            $restaurant = Restaurant::where('name', $newRestaurantData['name'])->where('address', $newRestaurantData['address'])->first();
+
+            // Si ya existe, devuelve error
+            if ($restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'El restaurante ya se encuentra registrado'
+                ], 409);
+            }
+
+            // Si no existe, lo añade
+            $restaurant = Restaurant::create([
+                'name' => $newRestaurantData['name'],
+                'address' => $newRestaurantData['address'],
+                'phone' => $newRestaurantData['phone']
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Restaurante añadido correctamente',
+                'restaurant' => $restaurant
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error al crear restaurante: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Ocurrió un error al registrar el restaurante'
+            ], 500);
+        }
+    }
+
+    /**
+     * Actualizar
+     * @author Donato Marino 
+     * 
+     * @param Request $request -> Contiene los campos a actualizar
+     * @param $id -> id del restaurante
+     * 
+     * @return JsonResponse
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            // Buscar por id
+            $restaurant = Restaurant::findOrFail($id);
+
+            // Actualizar los campos
+            $restaurant->update($request->only(['name', 'address', 'phone']));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Restaurante actualizado correctamente'
+            ]);
+        } catch (ModelNotFoundException $e) {
+            Log::error('Error al buscar el restaurante: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Restaurante no encontrado'
+            ], 404);
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar restaurante: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Ocurrió un error al actualizar el restaurante'
+            ], 500);
+        }
+    }
+
+    /**
+     * Eliminar
+     * @author Donato Marino 
+     * 
+     * @param $id -> Contiene id del restaurante
+     * 
+     * @return JsonResponse
+     */
+    public function destroy($id)
+    {
+        try {
+            // Buscar y eliminar el restaurante
+            $restaurant = Restaurant::findOrFail($id);
+            $restaurant->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Restaurante eliminado correctamente'
+            ]);
+        } catch (ModelNotFoundException $e) {
+            Log::error('Error al buscar el restaurante: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Restaurante no encontrado'
+            ], 404);
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar el restaurante: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Ocurrió un error al eliminar el restaurante'
+            ]);
+        }
+    }
+}
