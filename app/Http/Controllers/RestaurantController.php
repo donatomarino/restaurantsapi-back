@@ -27,7 +27,7 @@ class RestaurantController extends Controller
 
             return response()->json([
                 'success' => false,
-                'error' => 'Ocurrió un error al sacar los restaurantes'
+                'message' => 'Ocurrió un error al sacar los restaurantes'
             ], 500);
         }
     }
@@ -61,7 +61,7 @@ class RestaurantController extends Controller
             if ($restaurant) {
                 return response()->json([
                     'success' => false,
-                    'error' => 'El restaurante ya se encuentra registrado'
+                    'message' => 'El restaurante ya se encuentra registrado'
                 ], 409);
             }
 
@@ -75,14 +75,13 @@ class RestaurantController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Restaurante añadido correctamente',
-                'restaurant' => $restaurant
             ]);
         } catch (\Exception $e) {
             Log::error('Error al crear restaurante: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'error' => 'Ocurrió un error al registrar el restaurante'
+                'message' => 'Ocurrió un error al registrar el restaurante'
             ], 500);
         }
     }
@@ -121,7 +120,7 @@ class RestaurantController extends Controller
 
             return response()->json([
                 'success' => false,
-                'error' => 'Ocurrió un error al actualizar el restaurante'
+                'message' => 'Ocurrió un error al actualizar el restaurante'
             ], 500);
         }
     }
@@ -157,7 +156,7 @@ class RestaurantController extends Controller
 
             return response()->json([
                 'success' => false,
-                'error' => 'Ocurrió un error al eliminar el restaurante'
+                'message' => 'Ocurrió un error al eliminar el restaurante'
             ]);
         }
     }

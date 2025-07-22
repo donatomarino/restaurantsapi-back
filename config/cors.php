@@ -18,7 +18,7 @@ return [
     'paths' => ['api/*', 'sb-json', 'api/documentacion'],
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost'],
+    'allowed_origins' => ['http://localhost:5173'],
 
     'allowed_origins_patterns' => [],
 
