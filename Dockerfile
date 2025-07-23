@@ -41,6 +41,9 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Da permisos de escritura a los directorios necesarios para Laravel.
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Copia el archivo de ejemplo de configuración de entorno y lo renombra a .env.
+RUN cp .env.example .env
+
 # Genera la clave de la aplicación Laravel.
 RUN php artisan key:generate
 
