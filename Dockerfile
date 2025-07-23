@@ -44,8 +44,10 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Copia el archivo de ejemplo de configuración de entorno y lo renombra a .env.
 RUN cp .env.example .env
 
-# Genera la clave de la aplicación Laravel.
-RUN php artisan key:generate
+# Solo creamos un .env temporal para que no falle el build
+RUN cp .env.example .env && \
+    php artisan key:generate && \
+    rm .env
 
 # Optimiza la configuración, rutas y vistas para producción.
 RUN php artisan config:cache && php artisan
