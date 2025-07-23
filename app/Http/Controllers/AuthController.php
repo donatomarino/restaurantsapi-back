@@ -33,7 +33,7 @@ class AuthController extends Controller
             if (!$user || !Hash::check($loginUserData['password'], $user->password)) {
                 return response()->json([
                     'success' => false,
-                    'error' => 'Credenciales inválidas'
+                    'message' => 'Credenciales inválidas'
                 ], 401);
             }
 

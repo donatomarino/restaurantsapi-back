@@ -21,7 +21,11 @@ class RestaurantController extends Controller
     {
         try {
             $restaurants = Restaurant::all();
-            return response()->json($restaurants);
+            return response()->json([
+                'success' => true,
+                'message' => 'Restaurantes obtenidos correctamente',
+                'data' => $restaurants
+            ]);
         } catch (\Exception $e) {
             Log::error('Error al sacar restaurantes: ' . $e->getMessage());
 
