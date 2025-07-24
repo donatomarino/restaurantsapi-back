@@ -40,7 +40,7 @@ return [
                  */
                 'format_to_use_for_docs' => env('L5_FORMAT_TO_USE_FOR_DOCS', 'json'),
 
-                'swagger_ui_favicon' => env('L5_SWAGGER_FAVICON', 'favicon-16x16.png'),
+                'swagger_ui_favicon' => null,
 
                 /*
                  * Absolute paths to directory containing the swagger annotations are stored.
