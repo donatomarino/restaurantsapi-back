@@ -16,35 +16,39 @@ return [
             ],
             'paths' => [
                 /*
-                 * Edit to include full URL in ui for assets
-                 */
+     * Edit to include full URL in ui for assets
+     */
                 'absolute_url' => env('APP_URL', 'https://restaurantsapi-back-1.onrender.com') . '/',
 
                 /*
-                * Edit to set path where swagger ui assets should be stored
-                */
-                'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
+     * Edit to set path where swagger ui assets should be stored
+     */
+                'swagger_ui_assets_path' => 'https://restaurantsapi-back-1.onrender.com/docs/asset/',
 
                 /*
-                 * File name of the generated json documentation file
-                 */
+     * File name of the generated json documentation file
+     */
                 'docs_json' => 'api-docs.json',
 
                 /*
-                 * File name of the generated YAML documentation file
-                 */
+     * File name of the generated YAML documentation file
+     */
                 'docs_yaml' => 'api-docs.yaml',
 
                 /*
-                 * Set this to `json` or `yaml` to determine which documentation file to use in UI
-                 */
+     * Set this to `json` or `yaml` to determine which documentation file to use in UI
+     */
                 'format_to_use_for_docs' => env('L5_FORMAT_TO_USE_FOR_DOCS', 'json'),
 
-                'swagger_ui_favicon' => null,
+                // Fuerza HTTPS en todos los assets principales
+                'swagger_ui_css' => 'https://restaurantsapi-back-1.onrender.com/docs/asset/swagger-ui.css',
+                'swagger_ui_bundle_js' => 'https://restaurantsapi-back-1.onrender.com/docs/asset/swagger-ui-bundle.js',
+                'swagger_ui_standalone_preset_js' => 'https://restaurantsapi-back-1.onrender.com/docs/asset/swagger-ui-standalone-preset.js',
+                'swagger_ui_favicon' => 'https://restaurantsapi-back-1.onrender.com/docs/asset/favicon-16x16.png',
 
                 /*
-                 * Absolute paths to directory containing the swagger annotations are stored.
-                 */
+     * Absolute paths to directory containing the swagger annotations are stored.
+     */
                 'annotations' => [
                     base_path('app'),
                     base_path('app/Docs'),
