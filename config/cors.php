@@ -18,7 +18,7 @@ return [
     'paths' => ['api/*', 'sb-json', 'api/documentacion'],
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://restaurantsapi-back-1.onrender.com'],
+    'allowed_origins' => ['https://restaurantsapi-front.vercel.app'],
 
     'allowed_origins_patterns' => [],
 
