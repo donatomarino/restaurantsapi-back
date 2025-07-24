@@ -23,7 +23,7 @@ return [
                 /*
      * Edit to set path where swagger ui assets should be stored
      */
-                'swagger_ui_assets_path' => 'https://restaurantsapi-back-1.onrender.com/docs/asset/',
+                'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
 
                 /*
      * File name of the generated json documentation file
@@ -40,11 +40,11 @@ return [
      */
                 'format_to_use_for_docs' => env('L5_FORMAT_TO_USE_FOR_DOCS', 'json'),
 
-                // Fuerza HTTPS en todos los assets principales
-                'swagger_ui_css' => 'https://restaurantsapi-back-1.onrender.com/docs/asset/swagger-ui.css',
-                'swagger_ui_bundle_js' => 'https://restaurantsapi-back-1.onrender.com/docs/asset/swagger-ui-bundle.js',
-                'swagger_ui_standalone_preset_js' => 'https://restaurantsapi-back-1.onrender.com/docs/asset/swagger-ui-standalone-preset.js',
-                'swagger_ui_favicon' => 'https://restaurantsapi-back-1.onrender.com/docs/asset/favicon-16x16.png',
+                // Usa solo los nombres de archivo, no URLs absolutas
+                'swagger_ui_css' => 'swagger-ui.css',
+                'swagger_ui_bundle_js' => 'swagger-ui-bundle.js',
+                'swagger_ui_standalone_preset_js' => 'swagger-ui-standalone-preset.js',
+                'swagger_ui_favicon' => 'favicon-16x16.png',
 
                 /*
      * Absolute paths to directory containing the swagger annotations are stored.
