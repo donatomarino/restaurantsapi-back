@@ -18,8 +18,8 @@ return [
     'paths' => ['api/*', 'sb-json', 'api/documentacion'],
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => explode(',', env('CORS_ALLOWED_ORIGINS', '')),
-    
+    'allowed_origins' => [('https://restaurantsapi-front.vercel.app/')],
+
     'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
