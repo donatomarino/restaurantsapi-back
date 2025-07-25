@@ -1,6 +1,9 @@
 # Restaurants API
 
-API RESTful desarrollada en Laravel para la gestión de restaurantes.
+He desarrollado una API RESTful en Laravel que permite gestionar restaurantes con operaciones CRUD básicas, utilizando Eloquent ORM para la persistencia en MySQL.
+La API está protegida con autenticación básica HTTP para asegurar el acceso.
+Se incluye documentación automática generada con Swagger para facilitar la integración.
+El proyecto está containerizado con Docker para asegurar un despliegue sencillo y reproducible.
 
 ## Requisitos
 

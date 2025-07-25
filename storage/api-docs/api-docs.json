@@ -179,6 +179,12 @@
                     "404": {
                         "description": "Restaurante no encontrado"
                     },
+                    "409": {
+                        "description": "Restaurante ya existe"
+                    },
+                    "422": {
+                        "description": "Debes modificar al menos un campo para actualizar el restaurante"
+                    },
                     "500": {
                         "description": "Error del servidor"
                     }
