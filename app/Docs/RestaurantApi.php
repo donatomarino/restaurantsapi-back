@@ -59,6 +59,10 @@ class RestaurantApi
    *     description="Restaurante ya existe"
    *   ),
    *   @OA\Response(
+   *     response=422,
+   *     description="Todos los campos son obligatorios"
+   *   ),
+   *   @OA\Response(
    *     response=500,
    *     description="Error del servidor"
    *   )

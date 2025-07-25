@@ -10,7 +10,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost/restaurants-api/public"
+            "url": "http://localhost/restaurantsapi-back/public"
         }
     ],
     "paths": {
@@ -50,6 +50,9 @@
                     },
                     "401": {
                         "description": "Credenciales inválidas"
+                    },
+                    "422": {
+                        "description": "Todos los campos son obligatorios"
                     },
                     "500": {
                         "description": "Error del servidor"
@@ -116,6 +119,9 @@
                     },
                     "409": {
                         "description": "Restaurante ya existe"
+                    },
+                    "422": {
+                        "description": "Todos los campos son obligatorios"
                     },
                     "500": {
                         "description": "Error del servidor"

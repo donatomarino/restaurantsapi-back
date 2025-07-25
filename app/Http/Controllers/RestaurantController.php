@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Restaurant;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class RestaurantController extends Controller
 {
@@ -80,6 +81,11 @@ class RestaurantController extends Controller
                 'success' => true,
                 'message' => 'Restaurante añadido correctamente',
             ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             Log::error('Error al crear restaurante: ' . $e->getMessage());
 
