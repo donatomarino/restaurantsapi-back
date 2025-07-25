@@ -99,6 +99,14 @@ class RestaurantApi
    *     description="Restaurante no encontrado"
    *   ),
    *   @OA\Response(
+   *     response=409,
+   *     description="Restaurante ya existe"
+   *   ),
+   *   @OA\Response(
+   *     response=422,
+   *     description="Debes modificar al menos un campo para actualizar el restaurante"
+   *   ),
+   *   @OA\Response(
    *     response=500,
    *     description="Error del servidor"
    *   )

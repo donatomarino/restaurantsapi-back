@@ -60,10 +60,10 @@ class RestaurantController extends Controller
             ]);
 
             // Verificar si el restaurante ya existe
-            $restaurant = Restaurant::where('name', $newRestaurantData['name'])->where('address', $newRestaurantData['address'])->first();
+            $restaurantExists = $this->restaurantExists($newRestaurantData);
 
-            // Si ya existe, devuelve error
-            if ($restaurant) {
+            // Si ya existe, devuelve un error
+            if ($restaurantExists) {
                 return response()->json([
                     'success' => false,
                     'message' => 'El restaurante ya se encuentra registrado',
@@ -72,7 +72,7 @@ class RestaurantController extends Controller
             }
 
             // Si no existe, lo añade
-            $restaurant = Restaurant::create([
+            Restaurant::create([
                 'name' => $newRestaurantData['name'],
                 'address' => $newRestaurantData['address'],
                 'phone' => $newRestaurantData['phone']
@@ -112,6 +112,30 @@ class RestaurantController extends Controller
             // Buscar por id
             $restaurant = Restaurant::findOrFail($id);
 
+            // Verificar si por lo menos un campo ha sido modificado
+            $noChanges = $request->name === $restaurant['name'] &&
+                $request->address === $restaurant['address'] &&
+                $request->phone === $restaurant['phone'];
+
+            if ($noChanges) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Debes modificar al menos un campo para actualizar el restaurante'
+                ], 422);
+            }
+
+            // Verificar si el restaurante ya existe
+            $restaurantExists = $this->restaurantExists($request->only(['name', 'address']));
+
+            // Si ya existe, devuelve un error
+            if ($restaurantExists) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El restaurante ya se encuentra registrado',
+                    'error' => true
+                ], 409);
+            }
+            
             // Actualizar los campos
             $restaurant->update($request->only(['name', 'address', 'phone']));
 
@@ -171,5 +195,19 @@ class RestaurantController extends Controller
                 'message' => 'Ocurrió un error al eliminar el restaurante'
             ]);
         }
+    }
+
+    /**
+     * Verifica si el restaurante ya existe
+     * @author Donato Marino
+     * @param array $restaurant -> Contiene el nombre y dirección del restaurante
+     * @return JsonResponse|bool
+     */
+    private function restaurantExists(array $restaurant): bool
+    {
+        return Restaurant::withTrashed()
+            ->where('name', $restaurant['name'])
+            ->where('address', $restaurant['address'])
+            ->exists();
     }
 }
