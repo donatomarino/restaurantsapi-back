@@ -66,7 +66,8 @@ class RestaurantController extends Controller
             if ($restaurant) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'El restaurante ya se encuentra registrado'
+                    'message' => 'El restaurante ya se encuentra registrado',
+                    'error' => true
                 ], 409);
             }
 
@@ -123,7 +124,8 @@ class RestaurantController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Restaurante no encontrado'
+                'message' => 'Restaurante no encontrado',
+                'error' => true
             ], 404);
         } catch (\Exception $e) {
             Log::error('Error al actualizar restaurante: ' . $e->getMessage());
