@@ -21,6 +21,11 @@ return [
                 'absolute_url' => env('APP_URL', 'http://localhost') . '/',
 
                 /*
+                 * Base path that gets prepended to all documented routes (used by Swagger UI)
+                 */
+                'base' => env('L5_SWAGGER_BASE_PATH', '/api'),
+
+                /*
                 * Edit to set path where swagger ui assets should be stored
                 */
                 'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),

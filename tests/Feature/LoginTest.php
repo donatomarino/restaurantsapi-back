@@ -22,10 +22,10 @@ class LoginTest extends TestCase
         ]);
     }
 
-    public function test_login_success()
+    public function test_login_success(): void
     {
         // Acceso correcto
-        $response = $this->post(action([AuthController::class, 'index']), [
+        $response = $this->post('api/auth', [
             'email' => 'donato@wewelcome.com',
             'password' => 'wewelcome2025',
         ]);
@@ -38,7 +38,7 @@ class LoginTest extends TestCase
             ]);
     }
 
-    public function test_login_validation_errors()
+    public function test_login_validation_errors(): void
     {
         // Faltan campos
         $response = $this->post(action([AuthController::class, 'index']), [
@@ -51,7 +51,7 @@ class LoginTest extends TestCase
             ]);
     }
 
-    public function test_login_invalid_credentials()
+    public function test_login_invalid_credentials(): void
     {
         // Usuario no encontrado
         $response = $this->post(action([AuthController::class, 'index']), [

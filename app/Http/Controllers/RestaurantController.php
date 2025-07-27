@@ -15,8 +15,6 @@ class RestaurantController extends Controller
      * @author Donato Marino 
      *      
      * @return JsonResponse
-     * 
-     * @
      */
     public function index()
     {
@@ -85,7 +83,8 @@ class RestaurantController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->errors()
+                'message' => $e->errors(),
+                'error' => true
             ], 422);
         } catch (\Exception $e) {
             Log::error('Error al crear restaurante: ' . $e->getMessage());
@@ -120,7 +119,8 @@ class RestaurantController extends Controller
             if ($noChanges) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Debes modificar al menos un campo para actualizar el restaurante'
+                    'message' => 'Debes modificar al menos un campo para actualizar el restaurante',
+                    'error' => true
                 ], 422);
             }
 
@@ -135,7 +135,7 @@ class RestaurantController extends Controller
                     'error' => true
                 ], 409);
             }
-            
+
             // Actualizar los campos
             $restaurant->update($request->only(['name', 'address', 'phone']));
 
@@ -185,7 +185,8 @@ class RestaurantController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Restaurante no encontrado'
+                'message' => 'Restaurante no encontrado',
+                'error' => true
             ], 404);
         } catch (\Exception $e) {
             Log::error('Error al eliminar el restaurante: ' . $e->getMessage());
@@ -200,7 +201,9 @@ class RestaurantController extends Controller
     /**
      * Verifica si el restaurante ya existe
      * @author Donato Marino
+     * 
      * @param array $restaurant -> Contiene el nombre y dirección del restaurante
+     * 
      * @return JsonResponse|bool
      */
     private function restaurantExists(array $restaurant): bool

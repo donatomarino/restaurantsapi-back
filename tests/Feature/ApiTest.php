@@ -13,18 +13,21 @@ class ApiTest extends TestCase
 {
     use RefreshDatabase;
     protected $token;
+    protected $user;
 
     protected function setUp(): void
     {
         parent::setUp();
         // Crea usuario y genera token
-        $user = User::factory()->create();
-        $this->token = $user->createToken('auth_token')->plainTextToken;
+        $this->user = User::factory()->create();
+        $this->token = $this->user->createToken('auth_token')->plainTextToken;
         // Crea nuevos restaurantes aleatorios
-        Restaurant::factory(10)->create();
+        Restaurant::factory(5)->create();
     }
 
-    public function test_get_restaurants_success()
+    // ============== GET TESTS ============== 
+    // Obtener todos los restaurantes correctamente
+    public function test_get_restaurants_success(): void
     {
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->token,
@@ -46,30 +49,35 @@ class ApiTest extends TestCase
             ]);
     }
 
-    public function test_create_restaurant_success()
+
+
+    // ============== AÑADIR TESTS ==============
+    // Crear restaurante correctamente
+    public function test_create_restaurant_success(): void
     {
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
-        ])->post('api/restaurants', [
+        $data = [
             'name' => 'Nuevo Restaurante',
             'address' => 'Calle Falsa 123',
             'phone' => '123456789',
-        ]);
+        ];
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->post('api/restaurants', $data);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'success',
                 'message',
             ]);
+
+        $this->assertDatabaseHas('restaurants', $data);
     }
 
-    public function test_create_restaurant_existing()
+    // Crear restaurante con nombre y dirección existente
+    public function test_create_restaurant_existing(): void
     {
-        $restaurant = Restaurant::factory()->create([
-            'name' => 'Restaurante Existente',
-            'address' => 'Calle Existente 456',
-            'phone' => '987654321',
-        ]);
+        $restaurant = Restaurant::factory()->create();
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->token,
@@ -83,10 +91,12 @@ class ApiTest extends TestCase
             ->assertJsonStructure([
                 'success',
                 'message',
+                'error'
             ]);
     }
 
-    public function test_create_restaurant_validation_errors()
+    // Crear restaurante con validación de campos faltantes
+    public function test_create_restaurant_validation_errors(): void
     {
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->token,
@@ -99,6 +109,130 @@ class ApiTest extends TestCase
             ->assertJsonStructure([
                 'success',
                 'message',
+                'error'
+            ]);
+    }
+
+
+    // ============== UPDATE TESTS ==============
+    // Actualizar restaurante correctamente
+    public function test_update_restaurant_success(): void
+    {
+        $restaurant = Restaurant::factory()->create();
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->put('api/restaurants/' . $restaurant->id, [
+            'name' => 'Update Restaurant',
+            'address' => 'Update Address',
+            'phone' => '123456789'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'success',
+                'message',
+            ]);
+    }
+
+    // Actualizar restaurante con nombre y dirección ya existentes
+    public function test_update_restaurant_existing(): void
+    {
+        $restaurant = Restaurant::factory()->create();
+        $existingRestaurant = Restaurant::factory()->create();
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->put('api/restaurants/' . $restaurant->id, [
+            'name' => $existingRestaurant->name,
+            'address' => $existingRestaurant->address,
+            'phone' => $restaurant->phone,
+        ]);
+        $response->assertStatus(409)
+            ->assertJsonStructure([
+                'success',
+                'message',
+                'error'
+            ]);
+    }
+
+    // Actualizar restaurante sin modificar campos
+    public function test_update_restaurant_no_changes(): void
+    {
+        $restaurant = Restaurant::factory()->create();
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->put('api/restaurants/' . $restaurant->id, [
+            'name' => $restaurant->name,
+            'address' => $restaurant->address,
+            'phone' => $restaurant->phone,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'success',
+                'message',
+                'error'
+            ]);
+    }
+
+    // Actualizar restaurante que no existe
+    public function test_update_restaurant_not_existing(): void
+    {
+        Restaurant::factory()->create();
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->put('api/restaurants/493', [
+            'name' => 'Restaurante Inexistente',
+            'address' => 'Direccion Inexistente',
+            'phone' => '123456789',
+        ]);
+
+        $response->assertStatus(404)
+            ->assertJsonStructure([
+                'success',
+                'message',
+                'error'
+            ]);
+    }
+
+
+
+    // ============== DELETE TESTS ==============
+    // Eliminar restaurante correctamente
+    public function test_delete_restaurant_success(): void
+    {
+        $restaurant = Restaurant::factory()->create();
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->delete('api/restaurants/' . $restaurant->id);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'success',
+                'message',
+            ]);
+
+        $this->assertSoftDeleted('restaurants', [
+            'id' => $restaurant->id,
+        ]);
+    }
+
+    // Eliminar restaurante que no existe
+    public function test_delete_restaurant_not_found(): void
+    {
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->delete('api/restaurants/20');
+
+        $response->assertStatus(404)
+            ->assertJsonStructure([
+                'success',
+                'message',
+                'error'
             ]);
     }
 }
