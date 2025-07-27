@@ -1,70 +1,165 @@
-# Restaurants API
+# 🍽️ Restaurant API - Back
 
-He desarrollado una API RESTful en Laravel que permite gestionar restaurantes con operaciones CRUD básicas, utilizando Eloquent ORM para la persistencia en MySQL.
-La API está protegida con autenticación básica HTTP para asegurar el acceso.
-Se incluye documentación automática generada con Swagger para facilitar la integración.
-El proyecto está containerizado con Docker para asegurar un despliegue sencillo y reproducible.
+Una API RESTful desarrollada en Laravel para la gestión de restaurantes. Incluye operaciones CRUD completas, autenticación con Laravel Sanctum, documentación automática con Swagger y pruebas automatizadas.
 
-## Requisitos
+## 📋 Características
 
-- Docker y Docker Compose
-- (Opcional) PHP >= 8.2 y Composer si deseas ejecutar localmente sin contenedores
+- ✅ **CRUD completo** de restaurantes (Crear, Leer, Actualizar, Eliminar)
+- 🔐 **Autenticación segura** con Laravel Sanctum
+- 📚 **Documentación automática** con Swagger/OpenAPI
+- 🧪 **Tests automatizados** con PHPUnit
+- 🗄️ **Base de datos** desplegada en Amazon RDS
+- 🐳 **Containerización** con Docker
+- 🎨 **Frontend** desarrollado en React
 
-## Instalación y ejecución con Docker
+## 🏗️ Instalación
 
-1. **Clona el repositorio:**
-   ```bash
-   git clone https://github.com/tu-usuario/restaurantsapi-back.git
-   cd restaurantsapi-back
-   ```
+### Opción 1: Con Docker (Recomendado)
 
-2. **Construye la imagen y levanta el contenedor:**
-   ```bash
-   docker build -t restaurantsapi-back .
-   docker run -p 8080:80 --env-file .env restaurantsapi-back
-   ```
-   > El contenedor expone el puerto 80. Puedes acceder a la API en [http://localhost:8080](http://localhost:8080).
+```bash
+# Clonar el repositorio
+git clone https://github.com/tuusuario/restaurantsapi-back.git
+cd restaurantsapi-back
 
-3. **Configuración de entorno:**
-   - El archivo `.env` se genera automáticamente a partir de `.env.example` en el build del contenedor.
-   - Modifica las variables de entorno según tu configuración de base de datos y otros servicios.
+# Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus configuraciones de base de datos
 
-## Endpoints principales
+# Construir imagen
+docker build -t laravel-apirestaurants:1.0.0 .
 
-Consulta la documentación Swagger para ver todos los endpoints disponibles.
+# Ejecutar contenedor
+docker run -d \
+  --name restaurant-api \
+  -p 8000:80 \
+  --env-file .env \
+  laravel-apirestaurants:1.0.0
 
-## Documentación Swagger
+# Generar APP_KEY (OBLIGATORIO)
+docker exec restaurant-api php artisan key:generate
 
-La documentación interactiva de la API está disponible en:
+# Ejecutar migraciones y seeders
+docker exec restaurant-api php artisan migrate --seed
+
+# Optimizar para producción (opcional)
+docker exec restaurant-api php artisan config:cache
+docker exec restaurant-api php artisan route:cache
+```
+
+## 📖 Documentación de la API
+
+### Swagger/OpenAPI
+La documentación interactiva está disponible en:
+- **Local con Docker:** http://localhost:8000/api/documentation
+- **Producción:** https://tu-dominio.com/api/documentation
+
+## 📁 Estructura del Proyecto
 
 ```
-http://localhost:8080/api/documentation
+restaurantsapi-back/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── AuthController.php       # Controlador de autenticación
+│   │   │   └── RestaurantController.php # Controlador de restaurantes
+│   │   ├── Middleware/
+│   │   └── Requests/
+│   ├── Models/
+│   │   ├── Restaurant.php               # Modelo de restaurante
+│   │   └── User.php                     # Modelo de usuario
+│   └── Providers/
+├── bootstrap/
+│   └── cache/                           # Cache de Laravel
+├── config/
+│   ├── auth.php                         # Configuración de autenticación
+│   ├── cors.php                         # Configuración CORS
+│   ├── database.php                     # Configuración de base de datos
+│   └── sanctum.php                      # Configuración de Sanctum
+├── database/
+│   ├── factories/
+│   │   ├── RestaurantFactory.php        # Factory de restaurantes
+│   │   └── UserFactory.php              # Factory de usuarios
+│   ├── migrations/
+│   │   ├── create_users_table.php       # Migración de usuarios
+│   │   ├── create_restaurants_table.php # Migración de restaurantes
+│   │   └── create_personal_access_tokens_table.php
+│   └── seeders/
+│       ├── DatabaseSeeder.php           # Seeder principal
+│       ├── UserSeeder.php               # Seeder de usuarios
+│       └── RestaurantSeeder.php         # Seeder de restaurantes
+├── public/
+│   └── index.php                        # Punto de entrada
+├── routes/
+│   ├── api.php                          # Rutas de la API
+│   └── web.php                          # Rutas web
+├── storage/
+│   ├── app/
+│   ├── framework/
+│   └── logs/                            # Logs de la aplicación
+├── tests/
+│   ├── Feature/
+│   │   ├── ApiTest.php                  # Tests CRUD de restaurantes
+│   │   └── LoginTest.php                # Tests de autenticación
+│   └── Unit/
+├── vendor/                              # Dependencias de Composer
+├── .env.example                         # Variables de entorno de ejemplo
+├── .gitignore
+├── composer.json                        # Dependencias PHP
+├── Dockerfile                           # Imagen Docker
+├── phpunit.xml                          # Configuración de tests
+└── README.md                            # Este archivo
 ```
 
-> Esta ruta es generada por el paquete `l5-swagger`. Si cambias el puerto o la configuración, ajusta la URL en consecuencia.
+## 🧪 Testing
 
-## Estructura del proyecto
+### Ejecutar todos los tests
+```bash
+# Local
+php artisan test
 
-- `app/` - Lógica de negocio y modelos
-- `routes/` - Definición de rutas de la API
-- `config/` - Configuración de servicios y paquetes
-- `public/` - Punto de entrada de la aplicación (Apache sirve este directorio)
-- `storage/` y `bootstrap/cache/` - Directorios con permisos de escritura para Laravel
+# Con Docker
+docker exec -it restaurantsapi-back php artisan test
 
-## Comandos útiles
+# Con coverage
+php artisan test --coverage
+```
 
-- **Instalar dependencias:**  
-  Se ejecuta automáticamente en el build del contenedor con Composer.
-- **Generar clave de la aplicación:**  
-  Se ejecuta automáticamente (`php artisan key:generate`).
-- **Optimizar configuración y rutas:**  
-  Se ejecuta automáticamente (`php artisan config:cache && php artisan route:cache && php artisan view:cache`).
+### Tests incluidos
+- ✅ **Autenticación:** Login exitoso, credenciales inválidas, validaciones
+- ✅ **Restaurantes CRUD:** Crear, listar, actualizar, eliminar
+- ✅ **Validaciones:** Campos obligatorios, duplicados, formatos
+- ✅ **Autorización:** Acceso sin token, tokens inválidos
+- ✅ **Errores:** Manejo de errores 404, 422, 500
 
-## Notas de seguridad
+## 🗄️ Base de Datos
 
-- Los permisos de los directorios `storage` y `bootstrap/cache` se configuran para permitir escritura por el usuario de Apache.
-- Revisa y ajusta las variables sensibles en `.env` antes de desplegar en producción.
+### Amazon RDS
+- **Motor:** MySQL 8.0
+- **Instancia:** db.t3.micro (Free Tier)
+- **Almacenamiento:** 20GB SSD
+- **Backup:** Automático (7 días)
+- **Multi-AZ:** Habilitado para alta disponibilidad
 
-## Autor
+## 🛡️ Notas de Seguridad
 
-Donato Marino
+- ✅ **Autenticación:** Laravel Sanctum con tokens seguros
+- ✅ **Validación:** Validación de entrada en todos los endpoints
+- ✅ **CORS:** Configurado para dominios específicos
+- ✅ **Permisos:** Los directorios `storage` y `bootstrap/cache` configurados para Apache
+- ✅ **Variables sensibles:** Revisar y ajustar las variables en `.env` antes de producción
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea tu rama de feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 👨‍💻 Autor
+
+**Donato Marino**

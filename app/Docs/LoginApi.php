@@ -11,6 +11,10 @@ namespace App\Docs;
  *         name="Donato Marino",
  *     )
  * ),
+ * @OA\Server(
+ *    url=L5_SWAGGER_CONST_HOST,
+ *   description="API Server"
+ * ),
  * @OA\Tag(
  *     name="Login",
  *     description="Iniciar sesión"

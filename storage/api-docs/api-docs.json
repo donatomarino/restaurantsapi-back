@@ -10,7 +10,11 @@
     },
     "servers": [
         {
-            "url": "http://localhost/restaurantsapi-back/public"
+            "url": "https://restaurantsapi-back-1.onrender.com",
+            "description": "API Server"
+        },
+        {
+            "url": "http://localhost:8000/public"
         }
     ],
     "paths": {
