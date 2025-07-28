@@ -12,13 +12,15 @@ Una API RESTful desarrollada en Laravel para la gestión de restaurantes. Incluy
 - 🐳 **Containerización** con Docker
 - 🎨 **Frontend** desarrollado en React
 
+
+
 ## 🏗️ Instalación
 
 ### Opción 1: Con Docker (Recomendado)
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/tuusuario/restaurantsapi-back.git
+git clone https://github.com/donatomarino/restaurantsapi-back.git
 cd restaurantsapi-back
 
 # Configurar variables de entorno
@@ -46,12 +48,14 @@ docker exec restaurant-api php artisan config:cache
 docker exec restaurant-api php artisan route:cache
 ```
 
-## 📖 Documentación de la API
+## 📊 Arquitectura y Diagramas
 
-### Swagger/OpenAPI
+### Diagrama de Secuencia - Proceso de Autenticación
+![Diagrama de Login](./docs/diagrama_secuencia_login.png)
+
+### 📖 Documentación de la API
 La documentación interactiva está disponible en:
-- **Local con Docker:** http://localhost:8000/api/documentation
-- **Producción:** https://tu-dominio.com/api/documentation
+https://restaurantsapi-back-1.onrender.com/api/documentation
 
 ## 📁 Estructura del Proyecto
 
