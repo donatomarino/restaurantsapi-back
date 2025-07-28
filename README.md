@@ -168,10 +168,6 @@ docker exec -it restaurantsapi-back php artisan test
 - ✅ **Permisos:** Los directorios `storage` y `bootstrap/cache` configurados para Apache
 - ✅ **Variables sensibles:** Revisar y ajustar las variables en `.env`
 
-## 📝 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
 ## 👨‍💻 Autor
 
 **Donato Marino**
