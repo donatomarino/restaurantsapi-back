@@ -18,8 +18,15 @@ Una API RESTful desarrollada en Laravel para la gestión de restaurantes. Incluy
 ![Diagrama de Login](./docs/diagrama_secuencia_login.png)
 
 ### 📖 Documentación de la API
-La documentación interactiva está disponible en:
+La documentación completa con Swagger está disponible en:
 https://restaurantsapi-back-1.onrender.com/api/documentation
+
+#### 🔐 Autenticación Requerida
+Para realizar llamadas a la API protegida, primero necesitas obtener un token de autenticación:
+
+**Credenciales de prueba:**
+- **Email:** `donato@wewelcome.com`
+- **Password:** `wewelcome2025`
 
 ## 📁 Estructura del Proyecto
 
