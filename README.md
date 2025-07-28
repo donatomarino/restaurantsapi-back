@@ -108,7 +108,7 @@ restaurantsapi-back/
 
 ## 🏗️ Instalación
 
-### Opción 1: Con Docker (Recomendado)
+### Con Docker
 
 ```bash
 # Clonar el repositorio
@@ -134,10 +134,6 @@ docker exec restaurant-api php artisan key:generate
 
 # Ejecutar migraciones y seeders
 docker exec restaurant-api php artisan migrate --seed
-
-# Optimizar para producción (opcional)
-docker exec restaurant-api php artisan config:cache
-docker exec restaurant-api php artisan route:cache
 ```
 
 ## 🧪 Testing
@@ -149,9 +145,6 @@ php artisan test
 
 # Con Docker
 docker exec -it restaurantsapi-back php artisan test
-
-# Con coverage
-php artisan test --coverage
 ```
 
 ### Tests incluidos
