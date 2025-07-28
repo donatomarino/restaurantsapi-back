@@ -104,7 +104,7 @@ class RestaurantApi
    *   ),
    *   @OA\Response(
    *     response=422,
-   *     description="Debes modificar al menos un campo para actualizar el restaurante"
+   *     description="Errores de validaciones"
    *   ),
    *   @OA\Response(
    *     response=500,

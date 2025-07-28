@@ -7,6 +7,7 @@ use App\Models\Restaurant;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Propaganistas\LaravelPhone\Rules\Phone;
 
 class RestaurantController extends Controller
 {
@@ -50,11 +51,12 @@ class RestaurantController extends Controller
             $newRestaurantData = $request->validate([
                 'name' => 'required|string',
                 'address' => 'required|string',
-                'phone' => 'required|string',
+                'phone' => 'required|phone:ES,US',
             ], [
                 'name.required' => 'El nombre es obligatorio',
                 'address.required' => 'La dirección es obligatoria',
-                'phone.required' => 'El telefono es obligatorio'
+                'phone.required' => 'El telefono es obligatorio',
+                'phone.phone' => 'El teléfono debe ser un número válido',
             ]);
 
             // Verificar si el restaurante ya existe
@@ -108,6 +110,18 @@ class RestaurantController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            // Comprobar que se pasen todos los campos obligatorios
+            $request->validate([
+                'name' => 'required|string',
+                'address' => 'required|string',
+                'phone' => 'required|phone:ES,US',
+            ], [
+                'name.required' => 'El nombre es obligatorio',
+                'address.required' => 'La dirección es obligatoria',
+                'phone.required' => 'El telefono es obligatorio',
+                'phone.phone' => 'El teléfono debe ser un número válido',
+            ]);
+
             // Buscar por id
             $restaurant = Restaurant::findOrFail($id);
 
@@ -143,6 +157,12 @@ class RestaurantController extends Controller
                 'success' => true,
                 'message' => 'Restaurante actualizado correctamente'
             ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->errors(),
+                'error' => true
+            ], 422);
         } catch (ModelNotFoundException $e) {
             Log::error('Error al buscar el restaurante: ' . $e->getMessage());
 

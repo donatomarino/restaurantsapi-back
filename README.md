@@ -17,6 +17,14 @@ Una API RESTful desarrollada en Laravel para la gestión de restaurantes. Incluy
 ### Diagrama de Secuencia - Proceso de Autenticación
 ![Diagrama de Login](./docs/diagrama_secuencia_login.png)
 
+Este diagrama ilustra el flujo completo de autenticación implementado con Laravel Sanctum, incluyendo:
+
+- ✅ Validación de campos obligatorios
+- ✅ Verificación de credenciales en base de datos
+- ✅ Generación de tokens seguros
+- ✅ Manejo de errores (422, 401, 500)
+- ✅ Respuestas JSON estructuradas
+
 ### 📖 Documentación de la API
 La documentación completa con Swagger está disponible en:
 https://restaurantsapi-back-1.onrender.com/api/documentation
@@ -27,6 +35,19 @@ Para realizar llamadas a la API protegida, primero necesitas obtener un token de
 **Credenciales de prueba:**
 - **Email:** `donato@wewelcome.com`
 - **Password:** `wewelcome2025`
+
+### 📞 Validación de Teléfonos
+Se ha implementado validación avanzada de números de teléfono usando el paquete `propaganistas/laravel-phone`:
+
+```php
+'phone' => 'required|phone:ES,US'
+```
+
+**Formatos soportados:**
+- ✅ **España (ES):** `+34 915 123 456`, `957 71 9926`, `982 883878`
+- ✅ **Estados Unidos (US):** `+1 555 123 4567`, `(555) 123-4567`
+- ✅ **Formato internacional** con código de país
+- ✅ **Formato nacional** sin código de país
 
 ## 📁 Estructura del Proyecto
 
@@ -155,15 +176,7 @@ php artisan test --coverage
 - ✅ **Validación:** Validación de entrada en todos los endpoints
 - ✅ **CORS:** Configurado para dominios específicos
 - ✅ **Permisos:** Los directorios `storage` y `bootstrap/cache` configurados para Apache
-- ✅ **Variables sensibles:** Revisar y ajustar las variables en `.env` antes de producción
-
-## 🤝 Contribución
-
-1. Fork el proyecto
-2. Crea tu rama de feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+- ✅ **Variables sensibles:** Revisar y ajustar las variables en `.env`
 
 ## 📝 Licencia
 
@@ -172,3 +185,9 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 ## 👨‍💻 Autor
 
 **Donato Marino**
+
+
+
+
+
+
