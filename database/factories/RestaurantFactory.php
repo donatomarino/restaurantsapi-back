@@ -19,7 +19,7 @@ class RestaurantFactory extends Factory
         return [
             'name' => fake()->unique()->company(),
             'address' => fake()->unique()->address(),
-            'phone' => fake()->phoneNumber()
+            'phone' => '6' . fake()->numerify('########')
         ];
     }
 }

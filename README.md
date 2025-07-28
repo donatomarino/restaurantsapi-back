@@ -40,14 +40,11 @@ Para realizar llamadas a la API protegida, primero necesitas obtener un token de
 Se ha implementado validación avanzada de números de teléfono usando el paquete `propaganistas/laravel-phone`:
 
 ```php
-'phone' => 'required|phone:ES,US'
+'phone' => 'required|phone:ES'
 ```
 
 **Formatos soportados:**
 - ✅ **España (ES):** `+34 915 123 456`, `957 71 9926`, `982 883878`
-- ✅ **Estados Unidos (US):** `+1 555 123 4567`, `(555) 123-4567`
-- ✅ **Formato internacional** con código de país
-- ✅ **Formato nacional** sin código de país
 
 ## 📁 Estructura del Proyecto
 

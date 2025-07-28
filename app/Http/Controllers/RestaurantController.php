@@ -7,7 +7,6 @@ use App\Models\Restaurant;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Propaganistas\LaravelPhone\Rules\Phone;
 
 class RestaurantController extends Controller
 {
@@ -51,12 +50,12 @@ class RestaurantController extends Controller
             $newRestaurantData = $request->validate([
                 'name' => 'required|string',
                 'address' => 'required|string',
-                'phone' => 'required|phone:ES,US',
+                'phone' => 'required|phone:ES',
             ], [
                 'name.required' => 'El nombre es obligatorio',
                 'address.required' => 'La dirección es obligatoria',
                 'phone.required' => 'El telefono es obligatorio',
-                'phone.phone' => 'El teléfono debe ser un número válido',
+                'phone.phone' => 'El teléfono debe ser un número español válido',
             ]);
 
             // Verificar si el restaurante ya existe
@@ -114,12 +113,12 @@ class RestaurantController extends Controller
             $request->validate([
                 'name' => 'required|string',
                 'address' => 'required|string',
-                'phone' => 'required|phone:ES,US',
+                'phone' => 'required|phone:ES',
             ], [
                 'name.required' => 'El nombre es obligatorio',
                 'address.required' => 'La dirección es obligatoria',
                 'phone.required' => 'El telefono es obligatorio',
-                'phone.phone' => 'El teléfono debe ser un número válido',
+                'phone.phone' => 'El teléfono debe ser un número español válido',
             ]);
 
             // Buscar por id
