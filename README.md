@@ -22,7 +22,7 @@ Este diagrama ilustra el flujo completo de autenticación implementado con Larav
 - ✅ Validación de campos obligatorios
 - ✅ Verificación de credenciales en base de datos
 - ✅ Generación de tokens seguros
-- ✅ Manejo de errores (422, 401, 500)
+- ✅ Manejo de errores (422, 401)
 - ✅ Respuestas JSON estructuradas
 
 ### 📖 Documentación de la API
