@@ -28,7 +28,7 @@ WORKDIR /var/www/html
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Instala dependencias de PHP
-RUN composer install --prefer-dist --no-dev --no-interaction --optimize-autoloader
+RUN composer install --prefer-dist --no-interaction
 
 # Asigna permisos correctos a las carpetas necesarias
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
