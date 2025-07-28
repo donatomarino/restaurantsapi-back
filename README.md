@@ -12,42 +12,6 @@ Una API RESTful desarrollada en Laravel para la gestión de restaurantes. Incluy
 - 🐳 **Containerización** con Docker
 - 🎨 **Frontend** desarrollado en React
 
-
-
-## 🏗️ Instalación
-
-### Opción 1: Con Docker (Recomendado)
-
-```bash
-# Clonar el repositorio
-git clone https://github.com/donatomarino/restaurantsapi-back.git
-cd restaurantsapi-back
-
-# Configurar variables de entorno
-cp .env.example .env
-# Editar .env con tus configuraciones de base de datos
-
-# Construir imagen
-docker build -t laravel-apirestaurants:1.0.0 .
-
-# Ejecutar contenedor
-docker run -d \
-  --name restaurant-api \
-  -p 8000:80 \
-  --env-file .env \
-  laravel-apirestaurants:1.0.0
-
-# Generar APP_KEY (OBLIGATORIO)
-docker exec restaurant-api php artisan key:generate
-
-# Ejecutar migraciones y seeders
-docker exec restaurant-api php artisan migrate --seed
-
-# Optimizar para producción (opcional)
-docker exec restaurant-api php artisan config:cache
-docker exec restaurant-api php artisan route:cache
-```
-
 ## 📊 Arquitectura y Diagramas
 
 ### Diagrama de Secuencia - Proceso de Autenticación
@@ -112,6 +76,40 @@ restaurantsapi-back/
 ├── Dockerfile                           # Imagen Docker
 ├── phpunit.xml                          # Configuración de tests
 └── README.md                            # Este archivo
+```
+
+## 🏗️ Instalación
+
+### Opción 1: Con Docker (Recomendado)
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/donatomarino/restaurantsapi-back.git
+cd restaurantsapi-back
+
+# Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus configuraciones de base de datos
+
+# Construir imagen
+docker build -t laravel-apirestaurants:1.0.0 .
+
+# Ejecutar contenedor
+docker run -d \
+  --name restaurant-api \
+  -p 8000:80 \
+  --env-file .env \
+  laravel-apirestaurants:1.0.0
+
+# Generar APP_KEY (OBLIGATORIO)
+docker exec restaurant-api php artisan key:generate
+
+# Ejecutar migraciones y seeders
+docker exec restaurant-api php artisan migrate --seed
+
+# Optimizar para producción (opcional)
+docker exec restaurant-api php artisan config:cache
+docker exec restaurant-api php artisan route:cache
 ```
 
 ## 🧪 Testing
