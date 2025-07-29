@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Restaurant;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use App\Exceptions\ApiException;
+use App\Exceptions\RequestValidationException;
 
 class RestaurantController extends Controller
 {
@@ -24,14 +25,9 @@ class RestaurantController extends Controller
                 'success' => true,
                 'message' => 'Restaurantes obtenidos correctamente',
                 'data' => $restaurants
-            ]);
+            ], 200);
         } catch (\Exception $e) {
-            Log::error('Error al sacar restaurantes: ' . $e->getMessage());
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Ocurrió un error al sacar los restaurantes'
-            ], 500);
+            throw new ApiException('Ocurrió un error al sacar los restaurantes', 500);
         }
     }
 
@@ -59,15 +55,14 @@ class RestaurantController extends Controller
             ]);
 
             // Verificar si el restaurante ya existe
-            $restaurantExists = $this->restaurantExists($newRestaurantData);
+            $restaurantExists = Restaurant::withTrashed()
+                ->where('name', $newRestaurantData['name'])
+                ->where('address', $newRestaurantData['address'])
+                ->exists();
 
             // Si ya existe, devuelve un error
             if ($restaurantExists) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'El restaurante ya se encuentra registrado',
-                    'error' => true
-                ], 409);
+                throw new ApiException('El restaurante ya se encuentra registrado', 409);
             }
 
             // Si no existe, lo añade
@@ -80,20 +75,13 @@ class RestaurantController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Restaurante añadido correctamente',
-            ]);
+            ], 201);
+        } catch (ApiException $e) {
+            throw $e;
         } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->errors(),
-                'error' => true
-            ], 422);
+            throw new RequestValidationException($e->errors(), $e->getCode());
         } catch (\Exception $e) {
-            Log::error('Error al crear restaurante: ' . $e->getMessage());
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Ocurrió un error al registrar el restaurante'
-            ], 500);
+            throw new ApiException('Error al crear el restaurante', 500);
         }
     }
 
@@ -109,11 +97,14 @@ class RestaurantController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            // Comprobar que se pasen todos los campos obligatorios
-            $request->validate([
-                'name' => 'required|string',
-                'address' => 'required|string',
-                'phone' => 'required|phone:ES',
+            // Verificar si la solicitud es PUT o PATCH
+            $isPut = $request->isMethod('put');
+
+            // Validar los campos obligatorios según el método
+            $validatedData = $request->validate([
+                'name' => $isPut ? 'required|string' : 'sometimes|required|string',
+                'address' => $isPut ? 'required|string' : 'sometimes|required|string',
+                'phone' => $isPut ? 'required|phone:ES' : 'sometimes|required|phone:ES',
             ], [
                 'name.required' => 'El nombre es obligatorio',
                 'address.required' => 'La dirección es obligatoria',
@@ -125,58 +116,48 @@ class RestaurantController extends Controller
             $restaurant = Restaurant::findOrFail($id);
 
             // Verificar si por lo menos un campo ha sido modificado
-            $noChanges = $request->name === $restaurant['name'] &&
-                $request->address === $restaurant['address'] &&
-                $request->phone === $restaurant['phone'];
-
-            if ($noChanges) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Debes modificar al menos un campo para actualizar el restaurante',
-                    'error' => true
-                ], 422);
+            $hasChanges = false;
+            foreach ($validatedData as $key => $value) {
+                if ($restaurant->$key !== $value) {
+                    $hasChanges = true;
+                    break;
+                }
             }
 
-            // Verificar si el restaurante ya existe
-            $restaurantExists = $this->restaurantExists($request->only(['name', 'address']));
+            // Si no hay cambios, devuelve un error
+            if (!$hasChanges) {
+                throw new ApiException('Debes modificar al menos un campo para actualizar el restaurante', 422);
+            }
+
+            // Verificar si el restaurante ya existe, excepto el actual
+            $checkName = $validatedData['name'] ?? $restaurant->name;
+            $checkAddress = $validatedData['address'] ?? $restaurant->address;
+            $restaurantExists = Restaurant::withTrashed()
+                ->where('name', $checkName)
+                ->where('address', $checkAddress)
+                ->where('id', '!=', $id)
+                ->exists();
 
             // Si ya existe, devuelve un error
             if ($restaurantExists) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'El restaurante ya se encuentra registrado',
-                    'error' => true
-                ], 409);
+                throw new ApiException('El restaurante ya se encuentra registrado', 409);
             }
 
-            // Actualizar los campos
-            $restaurant->update($request->only(['name', 'address', 'phone']));
+            // Actualizar todos los campos
+            $restaurant->update($validatedData);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Restaurante actualizado correctamente'
-            ]);
+            ], 200);
+        } catch (ApiException $e) {
+            throw $e;
         } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->errors(),
-                'error' => true
-            ], 422);
+            throw new RequestValidationException($e->errors(), $e->getCode());
         } catch (ModelNotFoundException $e) {
-            Log::error('Error al buscar el restaurante: ' . $e->getMessage());
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Restaurante no encontrado',
-                'error' => true
-            ], 404);
+            throw new ApiException('Restaurante no encontrado', 404);
         } catch (\Exception $e) {
-            Log::error('Error al actualizar restaurante: ' . $e->getMessage());
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Ocurrió un error al actualizar el restaurante'
-            ], 500);
+            throw new ApiException('Ocurrió un error al actualizar el restaurante', 500);
         }
     }
 
@@ -198,38 +179,11 @@ class RestaurantController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Restaurante eliminado correctamente'
-            ]);
+            ], 200);
         } catch (ModelNotFoundException $e) {
-            Log::error('Error al buscar el restaurante: ' . $e->getMessage());
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Restaurante no encontrado',
-                'error' => true
-            ], 404);
+            throw new ApiException('Restaurante no encontrado', 404);
         } catch (\Exception $e) {
-            Log::error('Error al eliminar el restaurante: ' . $e->getMessage());
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Ocurrió un error al eliminar el restaurante'
-            ]);
+            throw new ApiException('Ocurrió un error al eliminar el restaurante', 500);
         }
-    }
-
-    /**
-     * Verifica si el restaurante ya existe
-     * @author Donato Marino
-     * 
-     * @param array $restaurant -> Contiene el nombre y dirección del restaurante
-     * 
-     * @return JsonResponse|bool
-     */
-    private function restaurantExists(array $restaurant): bool
-    {
-        return Restaurant::withTrashed()
-            ->where('name', $restaurant['name'])
-            ->where('address', $restaurant['address'])
-            ->exists();
     }
 }

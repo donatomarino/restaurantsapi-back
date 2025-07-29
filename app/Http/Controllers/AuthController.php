@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ApiException;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Exceptions\RequestValidationException;
 
 class AuthController extends Controller
 {
@@ -32,10 +34,7 @@ class AuthController extends Controller
             // Buscar usuario
             $user = User::where('email', $loginUserData['email'])->first();
             if (!$user || !Hash::check($loginUserData['password'], $user->password)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Credenciales inválidas'
-                ], 401);
+                throw new ApiException('Inserta las credenciales indicadas en el placeholder', 401);
             }
 
             // Crear token
@@ -46,17 +45,11 @@ class AuthController extends Controller
                 'message' => 'Usuario autenticado correctamente',
                 'access_token' => $token,
                 'token_type' => 'Bearer'
-            ]);
+            ], 200);
         } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->errors()
-            ], 422);
+            throw new RequestValidationException($e->errors(), $e->getCode());
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ]);
+            throw new ApiException($e->getMessage(), $e->getCode());
         }
     }
 }
