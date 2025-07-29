@@ -2,15 +2,21 @@
 
 Una API RESTful desarrollada en Laravel para la gestión de restaurantes. Incluye operaciones CRUD completas, autenticación con Laravel Sanctum, documentación automática con Swagger y pruebas automatizadas.
 
+## 🚀 Despliegue en Render.com
+- **URL:** https://restaurantsapi-back-1.onrender.com
+
 ## 📋 Características
 
 - ✅ **CRUD completo** de restaurantes (Crear, Leer, Actualizar, Eliminar)
-- 🔐 **Autenticación segura** con Laravel Sanctum
+- 🔐 **Autenticación segura** con Laravel Sanctum y **Rate Limiting** para proteger la API
+- 📝 **Validación de datos** con mensajes personalizados
 - 📚 **Documentación automática** con Swagger/OpenAPI
 - 🧪 **Tests automatizados** con PHPUnit
 - 🗄️ **Base de datos** desplegada en Amazon RDS
 - 🐳 **Containerización** con Docker
 - 🎨 **Frontend** desarrollado en React
+- 🛡️ **Manejo centralizado de excepciones**
+- 📱 **Validación avanzada de teléfonos españoles**
 
 ## 📊 Arquitectura y Diagramas
 
@@ -45,6 +51,46 @@ Se ha implementado validación avanzada de números de teléfono usando el paque
 
 **Formatos soportados:**
 - ✅ **España (ES):** `+34 915 123 456`, `957 71 9926`, `982 883878`
+
+## 🛡️ Rate Limiting
+
+La API implementa límites de velocidad para proteger contra abuso:
+
+- **Autenticación (`/api/auth`):** 5 intentos por minuto por IP
+- **APIs autenticadas:** 60 requests por minuto por usuario
+
+## 📋 Códigos de Respuesta
+
+| Código | Descripción |
+|--------|-------------|
+| `200` | Éxito |
+| `201` | Recurso creado |
+| `401` | No autenticado / Credenciales inválidas |
+| `404` | Recurso no encontrado |
+| `409` | Conflicto (recurso duplicado) |
+| `422` | Errores de validación |
+| `429` | Rate limit excedido |
+| `500` | Error interno del servidor |
+
+## 🔧 Manejo de Excepciones
+
+La API utiliza un sistema centralizado de manejo de excepciones:
+
+```
+app/
+├── Exceptions/
+│   ├── ApiException.php            # Manejo centralizado de todas las excepciones
+│   └── RequestValidationException.php       # Excepción personalizada para errores de API
+```
+
+**Todas las respuestas de error siguen el formato:**
+```json
+{
+  "success": false,
+  "message": "Descripción del error",
+  "error": true
+}
+```
 
 ## 📁 Estructura del Proyecto
 
