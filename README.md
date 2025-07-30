@@ -106,46 +106,70 @@ restaurantsapi-back/
 │   ├── Models/
 │   │   ├── Restaurant.php               # Modelo de restaurante
 │   │   └── User.php                     # Modelo de usuario
+│   ├── Exceptions/
+│   │   ├── Handler.php                  # Manejo centralizado de excepciones
+│   │   └── ApiException.php             # Excepción personalizada para errores de API
+│   ├── Docs/
+│   │   └── LoginApi.php                 # Documentación Swagger del login
 │   └── Providers/
 ├── bootstrap/
-│   └── cache/                           # Cache de Laravel
+│   ├── cache/                           # Cache de Laravel
+│   └── providers.php                    # Registro de providers (Laravel 11+)
 ├── config/
 │   ├── auth.php                         # Configuración de autenticación
 │   ├── cors.php                         # Configuración CORS
 │   ├── database.php                     # Configuración de base de datos
-│   └── sanctum.php                      # Configuración de Sanctum
+│   ├── sanctum.php                      # Configuración de Sanctum
+│   └── l5-swagger.php                   # Configuración de Swagger
 ├── database/
 │   ├── factories/
 │   │   ├── RestaurantFactory.php        # Factory de restaurantes
 │   │   └── UserFactory.php              # Factory de usuarios
 │   ├── migrations/
-│   │   ├── create_users_table.php       # Migración de usuarios
-│   │   ├── create_restaurants_table.php # Migración de restaurantes
-│   │   └── create_personal_access_tokens_table.php
+│   │   ├── 0001_01_01_000000_create_users_table.php       # Migración de usuarios
+│   │   ├── 0001_01_01_000001_create_cache_table.php       # Migración de cache
+│   │   ├── 0001_01_01_000002_create_jobs_table.php        # Migración de jobs
+│   │   ├── xxxx_xx_xx_xxxxxx_create_restaurants_table.php # Migración de restaurantes
+│   │   └── xxxx_xx_xx_xxxxxx_create_personal_access_tokens_table.php # Sanctum tokens
 │   └── seeders/
 │       ├── DatabaseSeeder.php           # Seeder principal
 │       ├── UserSeeder.php               # Seeder de usuarios
 │       └── RestaurantSeeder.php         # Seeder de restaurantes
+├── docs/
+│   └── diagrama_secuencia_login.png     # Diagrama de autenticación
 ├── public/
-│   └── index.php                        # Punto de entrada
+│   ├── index.php                        # Punto de entrada
+│   └── docs/                            # Documentación Swagger generada
 ├── routes/
 │   ├── api.php                          # Rutas de la API
-│   └── web.php                          # Rutas web
+│   ├── web.php                          # Rutas web
+│   └── console.php                      # Comandos Artisan
 ├── storage/
 │   ├── app/
+│   │   ├── public/
+│   │   └── private/
 │   ├── framework/
-│   └── logs/                            # Logs de la aplicación
+│   │   ├── cache/
+│   │   ├── sessions/
+│   │   └── views/
+│   └── logs/
+│       └── laravel.log                  # Logs de la aplicación
 ├── tests/
 │   ├── Feature/
 │   │   ├── ApiTest.php                  # Tests CRUD de restaurantes
 │   │   └── LoginTest.php                # Tests de autenticación
-│   └── Unit/
+│   ├── Unit/
+│   ├── TestCase.php                     # Clase base para tests
+│   └── CreatesApplication.php           # Helper para tests
 ├── vendor/                              # Dependencias de Composer
 ├── .env.example                         # Variables de entorno de ejemplo
-├── .gitignore
-├── composer.json                        # Dependencias PHP
+├── .env                       ∫          # Variables de entorno (no versionado)
+├── .gitignore                           # Archivos ignorados por Git
+├── artisan                              # CLI de Laravel
+├── composer.json                        # Dependencias y scripts PHP
+├── composer.lock                        # Lock de versiones exactas
 ├── Dockerfile                           # Imagen Docker
-├── phpunit.xml                          # Configuración de tests
+├── phpunit.xml                          # Configuración de tests PHPUnit
 └── README.md                            # Este archivo
 ```
 
@@ -183,9 +207,6 @@ docker exec restaurant-api php artisan migrate --seed
 
 ### Ejecutar todos los tests
 ```bash
-# Local
-php artisan test
-
 # Con Docker
 docker exec -it restaurantsapi-back php artisan test
 ```

@@ -507,29 +507,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Restaurante eliminado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Restaurante eliminado correctamente"
-                                        },
-                                        "error": {
-                                            "type": "boolean",
-                                            "example": false
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                    "204": {
+                        "description": "Restaurante eliminado"
                     },
                     "404": {
                         "description": "Restaurante no encontrado",

@@ -234,13 +234,8 @@ class RestaurantApi
    *     @OA\Schema(type="integer")
    *   ),
    *   @OA\Response(
-   *     response=200,
+   *     response=204,
    *     description="Restaurante eliminado",
-   *     @OA\JsonContent(
-   *       @OA\Property(property="success", type="boolean", example=true),
-   *       @OA\Property(property="message", type="string", example="Restaurante eliminado correctamente"),
-   *       @OA\Property(property="error", type="boolean", example=false)
-   *     )
    *   ),
    *   @OA\Response(
    *     response=404,

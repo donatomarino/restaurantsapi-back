@@ -3,9 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Http\Controllers\RestaurantController;
 use App\Models\Restaurant;
 use App\Models\User;
 
@@ -51,21 +49,21 @@ class ApiTest extends TestCase
 
 
 
-    // ============== AÑADIR TESTS ==============
+    // ============== ADD TESTS ==============
     // Crear restaurante correctamente
     public function test_create_restaurant_success(): void
     {
         $data = [
             'name' => 'Nuevo Restaurante',
             'address' => 'Calle Falsa 123',
-            'phone' => '123456789',
+            'phone' => '988456789',
         ];
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->token,
         ])->post('api/restaurants', $data);
 
-        $response->assertStatus(200)
+        $response->assertStatus(201)
             ->assertJsonStructure([
                 'success',
                 'message',
@@ -102,7 +100,7 @@ class ApiTest extends TestCase
             'Authorization' => 'Bearer ' . $this->token,
         ])->post('api/restaurants', [
             'address' => 'Calle Sin Nombre',
-            'phone' => '123456789',
+            'phone' => '697873748',
         ]);
 
         $response->assertStatus(422)
@@ -115,7 +113,7 @@ class ApiTest extends TestCase
 
 
     // ============== UPDATE TESTS ==============
-    // Actualizar restaurante correctamente
+    // Actualizar restaurante por completo correctamente
     public function test_update_restaurant_success(): void
     {
         $restaurant = Restaurant::factory()->create();
@@ -125,7 +123,7 @@ class ApiTest extends TestCase
         ])->put('api/restaurants/' . $restaurant->id, [
             'name' => 'Update Restaurant',
             'address' => 'Update Address',
-            'phone' => '123456789'
+            'phone' => '659456789'
         ]);
 
         $response->assertStatus(200)
@@ -187,7 +185,7 @@ class ApiTest extends TestCase
         ])->put('api/restaurants/493', [
             'name' => 'Restaurante Inexistente',
             'address' => 'Direccion Inexistente',
-            'phone' => '123456789',
+            'phone' => '673456789',
         ]);
 
         $response->assertStatus(404)
@@ -195,6 +193,24 @@ class ApiTest extends TestCase
                 'success',
                 'message',
                 'error'
+            ]);
+    }
+
+    // Actualizar solamente un campo
+    public function test_update_only_phone_of_restaurant(): void
+    {
+        $restaurant = Restaurant::factory()->create();
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->patch('api/restaurants/' . $restaurant->id, [
+            'phone' => '697651199'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'success',
+                'message',
             ]);
     }
 
@@ -210,11 +226,7 @@ class ApiTest extends TestCase
             'Authorization' => 'Bearer ' . $this->token,
         ])->delete('api/restaurants/' . $restaurant->id);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'success',
-                'message',
-            ]);
+        $response->assertStatus(204);
 
         $this->assertSoftDeleted('restaurants', [
             'id' => $restaurant->id,

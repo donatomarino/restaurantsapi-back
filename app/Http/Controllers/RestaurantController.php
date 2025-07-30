@@ -176,10 +176,7 @@ class RestaurantController extends Controller
             $restaurant = Restaurant::findOrFail($id);
             $restaurant->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Restaurante eliminado correctamente'
-            ], 200);
+            return response(null, 204);
         } catch (ModelNotFoundException $e) {
             throw new ApiException('Restaurante no encontrado', 404);
         } catch (\Exception $e) {

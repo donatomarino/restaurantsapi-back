@@ -11,7 +11,7 @@ class RequestValidationException extends Exception
   public function __construct(
     array $errors,
     string $message = 'Los datos enviados no son válidos',
-    int $code = 400,
+    int $code = 422,
     ?\Throwable $previous = null
 
   ) {
