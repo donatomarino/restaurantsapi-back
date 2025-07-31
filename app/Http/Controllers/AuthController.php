@@ -47,7 +47,7 @@ class AuthController extends Controller
                 'token_type' => 'Bearer'
             ], 200);
         } catch (ValidationException $e) {
-            throw new RequestValidationException($e->errors(), $e->getCode());
+            throw new RequestValidationException($e->errors());
         } catch (\Exception $e) {
             throw new ApiException($e->getMessage(), $e->getCode());
         }

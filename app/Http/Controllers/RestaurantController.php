@@ -79,7 +79,7 @@ class RestaurantController extends Controller
         } catch (ApiException $e) {
             throw $e;
         } catch (ValidationException $e) {
-            throw new RequestValidationException($e->errors(), $e->getCode());
+            throw new RequestValidationException($e->errors());
         } catch (\Exception $e) {
             throw new ApiException('Error al crear el restaurante', 500);
         }
@@ -153,7 +153,7 @@ class RestaurantController extends Controller
         } catch (ApiException $e) {
             throw $e;
         } catch (ValidationException $e) {
-            throw new RequestValidationException($e->errors(), $e->getCode());
+            throw new RequestValidationException($e->errors());
         } catch (ModelNotFoundException $e) {
             throw new ApiException('Restaurante no encontrado', 404);
         } catch (\Exception $e) {
