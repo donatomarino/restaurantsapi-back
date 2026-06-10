@@ -49,7 +49,8 @@ class AuthController extends Controller
         } catch (ValidationException $e) {
             throw new RequestValidationException($e->errors());
         } catch (\Exception $e) {
-            throw new ApiException($e->getMessage(), $e->getCode());
+            $code = $e->getCode() ?: 500;
+            throw new ApiException($e->getMessage(), $code);
         }
     }
 }
