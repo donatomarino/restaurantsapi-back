@@ -27,6 +27,50 @@ Este diagrama ilustra el flujo completo de autenticación implementado con Larav
 
 - ✅ Validación de campos obligatorios
 
+---
+
+He mantenido la sección breve y alineada con tu ejemplo; ajusto cualquier detalle si quieres otro nombre de BD o usar PostgreSQL por defecto.
+│       ├── UserSeeder.php               # Seeder de usuarios
+│       └── RestaurantSeeder.php         # Seeder de restaurantes
+├── docs/
+│   └── diagrama_secuencia_login.png     # Diagrama de autenticación
+├── public/
+│   ├── index.php                        # Punto de entrada
+│   └── docs/                            # Documentación Swagger generada
+├── routes/
+│   ├── api.php                          # Rutas de la API
+│   ├── web.php                          # Rutas web
+│   └── console.php                      # Comandos Artisan
+├── storage/
+│   ├── app/
+│   │   ├── public/
+│   │   └── private/
+│   ├── framework/
+│   │   ├── cache/
+│   │   ├── sessions/
+│   │   └── views/
+│   └── logs/
+│       └── laravel.log                  # Logs de la aplicación
+├── tests/
+│   ├── Feature/
+│   │   ├── ApiTest.php                  # Tests CRUD de restaurantes
+│   │   └── LoginTest.php                # Tests de autenticación
+│   ├── Unit/
+│   ├── TestCase.php                     # Clase base para tests
+│   └── CreatesApplication.php           # Helper para tests
+├── vendor/                              # Dependencias de Composer
+├── .env.example                         # Variables de entorno de ejemplo
+├── .env                       ∫          # Variables de entorno (no versionado)
+├── .gitignore                           # Archivos ignorados por Git
+├── artisan                              # CLI de Laravel
+├── composer.json                        # Dependencias y scripts PHP
+├── composer.lock                        # Lock de versiones exactas
+├── Dockerfile                           # Imagen Docker
+├── phpunit.xml                          # Configuración de tests PHPUnit
+└── README.md                            # Este archivo
+```
+```
+
 ### Instalación local
 
 ## 1. Requisitos del sistema
@@ -125,175 +169,6 @@ php artisan storage:link
 
 ```bash
 php artisan serve
-```
-
----
-
-He mantenido la sección breve y alineada con tu ejemplo; ajusto cualquier detalle si quieres otro nombre de BD o usar PostgreSQL por defecto.
-│       ├── UserSeeder.php               # Seeder de usuarios
-│       └── RestaurantSeeder.php         # Seeder de restaurantes
-├── docs/
-│   └── diagrama_secuencia_login.png     # Diagrama de autenticación
-├── public/
-│   ├── index.php                        # Punto de entrada
-│   └── docs/                            # Documentación Swagger generada
-├── routes/
-│   ├── api.php                          # Rutas de la API
-│   ├── web.php                          # Rutas web
-│   └── console.php                      # Comandos Artisan
-├── storage/
-│   ├── app/
-│   │   ├── public/
-│   │   └── private/
-│   ├── framework/
-│   │   ├── cache/
-│   │   ├── sessions/
-│   │   └── views/
-│   └── logs/
-│       └── laravel.log                  # Logs de la aplicación
-├── tests/
-│   ├── Feature/
-│   │   ├── ApiTest.php                  # Tests CRUD de restaurantes
-│   │   └── LoginTest.php                # Tests de autenticación
-│   ├── Unit/
-│   ├── TestCase.php                     # Clase base para tests
-│   └── CreatesApplication.php           # Helper para tests
-├── vendor/                              # Dependencias de Composer
-├── .env.example                         # Variables de entorno de ejemplo
-├── .env                       ∫          # Variables de entorno (no versionado)
-├── .gitignore                           # Archivos ignorados por Git
-├── artisan                              # CLI de Laravel
-├── composer.json                        # Dependencias y scripts PHP
-├── composer.lock                        # Lock de versiones exactas
-├── Dockerfile                           # Imagen Docker
-├── phpunit.xml                          # Configuración de tests PHPUnit
-└── README.md                            # Este archivo
-```
-
-## 🏗️ Instalación
-
-### Con Docker
-
-```bash
-# Clonar el repositorio
-git clone https://github.com/donatomarino/restaurantsapi-back.git
-cd restaurantsapi-back
-
-# Configurar variables de entorno
-cp .env.example .env
-# Editar .env con tus configuraciones de base de datos
-
-# Construir imagen
-docker build -t laravel-apirestaurants:1.0.0 .
-
-# Ejecutar contenedor
-docker run -d \
-  --name restaurant-api \
-  -p 8000:80 \
-  --env-file .env \
-  laravel-apirestaurants:1.0.0
-
-# Generar APP_KEY (OBLIGATORIO)
-docker exec restaurant-api php artisan key:generate
-
-# Ejecutar migraciones y seeders
-docker exec restaurant-api php artisan migrate --seed
-```
-
-### Instalación local (sin Docker)
-
-Sigue estos pasos para ejecutar la API en tu máquina (macOS) sin Docker. Ajusta los comandos si usas Linux/Windows.
-
-Prerequisitos:
-- `Homebrew` (macOS)
-- `php` >= 8.1 con `pdo_pgsql` habilitado
-- `composer`
-- `postgresql` (o una base de datos compatible; la configuración por defecto usa PostgreSQL)
-- `node` + `npm` (si vas a compilar assets frontend)
-
-Pasos:
-
-1. Clona el repositorio y entra en la carpeta:
-
-```bash
-git clone https://github.com/donatomarino/restaurantsapi-back.git
-cd restaurantsapi-back
-```
-
-2. Instala y arranca PostgreSQL (Homebrew):
-
-```bash
-brew install postgresql
-brew services start postgresql
-```
-
-3. Crea la base de datos y el usuario (ajusta nombre/clave si prefieres):
-
-```bash
-# Crear base de datos
-createdb restaurantsapi
-
-# (Opcional) crear usuario postgres con contraseña 'postgres' y darle permisos
-# Ejecuta en psql si necesitas crear/ajustar el usuario:
-# psql -c "CREATE USER postgres WITH PASSWORD 'postgres';"
-# psql -c "ALTER USER postgres WITH SUPERUSER;"
-```
-
-4. Configura variables de entorno:
-
-```bash
-cp .env.example .env
-# Edita .env y ajusta las variables DB_* si es necesario. Valores por defecto recomendados:
-# DB_CONNECTION=pgsql
-# DB_HOST=127.0.0.1
-# DB_PORT=5432
-# DB_DATABASE=restaurantsapi
-# DB_USERNAME=postgres
-# DB_PASSWORD=postgres
-```
-
-5. Instala dependencias PHP y de Node (si aplica):
-
-```bash
-composer install --prefer-dist --no-interaction
-npm install
-# (Opcional) compilar assets
-npm run build
-```
-
-6. Ajusta permisos en `storage` y `bootstrap/cache`:
-
-```bash
-chmod -R 775 storage bootstrap/cache
-sudo chown -R $(whoami):$(id -gn) storage bootstrap/cache
-```
-
-7. Genera la `APP_KEY`, ejecuta migraciones y seeders:
-
-```bash
-php artisan key:generate
-php artisan migrate --seed
-```
-
-8. Ejecuta la aplicación localmente:
-
-```bash
-php artisan serve --host=127.0.0.1 --port=8000
-# La API estará disponible en: http://127.0.0.1:8000
-```
-
-Notas:
-- Si usas MySQL u otra BD, ajusta `DB_CONNECTION` y las variables en `.env`.
-- En macOS es común usar `brew services start postgresql` para mantener Postgres en segundo plano.
-- Si encuentras errores de conexión revisa que `DB_HOST` apunte a `127.0.0.1` y que el servicio de Postgres esté activo.
-
-
-## 🧪 Testing
-
-### Ejecutar todos los tests
-```bash
-# Con Docker
-docker exec -it restaurantsapi-back php artisan test
 ```
 
 ### Tests incluidos
