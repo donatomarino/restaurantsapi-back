@@ -26,113 +26,110 @@ Una API RESTful desarrollada en Laravel para la gestión de restaurantes. Incluy
 Este diagrama ilustra el flujo completo de autenticación implementado con Laravel Sanctum, incluyendo:
 
 - ✅ Validación de campos obligatorios
-- ✅ Verificación de credenciales en base de datos
-- ✅ Generación de tokens seguros
-- ✅ Manejo de errores (422, 401)
-- ✅ Respuestas JSON estructuradas
 
-### 📖 Documentación de la API
-La documentación completa con Swagger está disponible en:
-https://restaurantsapi-back-1.onrender.com/api/documentation
+### Instalación local
 
-#### 🔐 Autenticación Requerida
-Para realizar llamadas a la API protegida, primero necesitas obtener un token de autenticación:
+## 1. Requisitos del sistema
 
-**Credenciales de prueba:**
-- **Email:** `donato@wewelcome.com`
-- **Password:** `wewelcome2025`
+- PHP 8.1 o superior
+- Node.js 18 o superior
+- MySQL 8.0 o superior (o PostgreSQL/SQLite)
+- Composer
+- npm (incluido con Node.js)
 
-### 📞 Validación de Teléfonos
-Se ha implementado validación avanzada de números de teléfono usando el paquete `propaganistas/laravel-phone`:
+---
 
-```php
-'phone' => 'required|phone:ES'
+## 2. Preparación del proyecto
+
+1. Clona el proyecto:
+
+```bash
+git clone https://github.com/donatomarino/restaurantsapi-back.git
+cd restaurantsapi-back
 ```
 
-**Formatos soportados:**
-- ✅ **España (ES):** `+34 915 123 456`, `957 71 9926`, `982 883878`
+---
 
-## 🛡️ Rate Limiting
+## 3. Instalación del Backend (Laravel)
 
-La API implementa límites de velocidad para proteger contra abuso:
+### 3.1 Acceder al backend
 
-- **Autenticación (`/api/auth`):** 5 intentos por minuto por IP
-- **APIs autenticadas:** 60 requests por minuto por usuario
-
-## 📋 Códigos de Respuesta
-
-| Código | Descripción |
-|--------|-------------|
-| `200` | Éxito |
-| `201` | Recurso creado |
-| `401` | No autenticado / Credenciales inválidas |
-| `404` | Recurso no encontrado |
-| `409` | Conflicto (recurso duplicado) |
-| `422` | Errores de validación |
-| `429` | Rate limit excedido |
-| `500` | Error interno del servidor |
-
-## 🔧 Manejo de Excepciones
-
-La API utiliza un sistema centralizado de manejo de excepciones:
-
-```
-app/
-├── Exceptions/
-│   ├── ApiException.php            # Manejo centralizado de todas las excepciones
-│   └── RequestValidationException.php       # Excepción personalizada para errores de API
+```bash
+cd restaurantsapi-back
 ```
 
-**Todas las respuestas de error siguen el formato:**
-```json
-{
-  "success": false,
-  "message": "Descripción del error",
-  "error": true
-}
+### 3.2 Instalar dependencias
+
+```bash
+composer install
 ```
 
-## 📁 Estructura del Proyecto
+### 3.3 Crear archivo `.env`
+
+```bash
+cp .env.example .env
+```
+
+### 3.4 Configurar el archivo `.env`
+
+Abre `.env` y asegúrate de que los valores principales estén así (ajusta nombres según tu DB):
 
 ```
-restaurantsapi-back/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── AuthController.php       # Controlador de autenticación
-│   │   │   └── RestaurantController.php # Controlador de restaurantes
-│   │   ├── Middleware/
-│   │   └── Requests/
-│   ├── Models/
-│   │   ├── Restaurant.php               # Modelo de restaurante
-│   │   └── User.php                     # Modelo de usuario
-│   ├── Exceptions/
-│   │   ├── Handler.php                  # Manejo centralizado de excepciones
-│   │   └── ApiException.php             # Excepción personalizada para errores de API
-│   ├── Docs/
-│   │   └── LoginApi.php                 # Documentación Swagger del login
-│   └── Providers/
-├── bootstrap/
-│   ├── cache/                           # Cache de Laravel
-│   └── providers.php                    # Registro de providers (Laravel 11+)
-├── config/
-│   ├── auth.php                         # Configuración de autenticación
-│   ├── cors.php                         # Configuración CORS
-│   ├── database.php                     # Configuración de base de datos
-│   ├── sanctum.php                      # Configuración de Sanctum
-│   └── l5-swagger.php                   # Configuración de Swagger
-├── database/
-│   ├── factories/
-│   │   ├── RestaurantFactory.php        # Factory de restaurantes
-│   │   └── UserFactory.php              # Factory de usuarios
-│   ├── migrations/
-│   │   ├── 0001_01_01_000000_create_users_table.php       # Migración de usuarios
-│   │   ├── 0001_01_01_000001_create_cache_table.php       # Migración de cache
-│   │   ├── 0001_01_01_000002_create_jobs_table.php        # Migración de jobs
-│   │   ├── xxxx_xx_xx_xxxxxx_create_restaurants_table.php # Migración de restaurantes
-│   │   └── xxxx_xx_xx_xxxxxx_create_personal_access_tokens_table.php # Sanctum tokens
-│   └── seeders/
-│       ├── DatabaseSeeder.php           # Seeder principal
+APP_NAME=RestaurantsAPI
+
+APP_ENV=local
+
+APP_DEBUG=true
+
+APP_URL=http://localhost
+
+DB_CONNECTION=pgsql
+
+DB_HOST=127.0.0.1
+
+DB_PORT=5432
+
+DB_DATABASE=restaurantsapi
+
+DB_USERNAME=postgres
+
+DB_PASSWORD=
+```
+
+Notas importantes:
+
+- Si usas MySQL y tiene contraseña, colócala en `DB_PASSWORD=`.
+- Si prefieres MySQL, cambia `DB_CONNECTION=mysql` y ajusta `DB_PORT=3306`, `DB_USERNAME=root` y `DB_PASSWORD`.
+
+### 3.5 Generar clave de aplicación
+
+```bash
+php artisan key:generate
+```
+
+### 3.6 Ejecutar migraciones y seeds
+
+```bash
+php artisan migrate --seed
+```
+
+Si la base de datos no existe, créala con tu cliente SQL o herramienta del sistema antes de ejecutar `migrate`.
+
+### 3.7 Crear enlace simbólico de almacenamiento
+
+```bash
+php artisan storage:link
+```
+
+### 3.8 Iniciar servidor del backend
+
+```bash
+php artisan serve
+```
+
+---
+
+He mantenido la sección breve y alineada con tu ejemplo; ajusto cualquier detalle si quieres otro nombre de BD o usar PostgreSQL por defecto.
 │       ├── UserSeeder.php               # Seeder de usuarios
 │       └── RestaurantSeeder.php         # Seeder de restaurantes
 ├── docs/
@@ -202,6 +199,94 @@ docker exec restaurant-api php artisan key:generate
 # Ejecutar migraciones y seeders
 docker exec restaurant-api php artisan migrate --seed
 ```
+
+### Instalación local (sin Docker)
+
+Sigue estos pasos para ejecutar la API en tu máquina (macOS) sin Docker. Ajusta los comandos si usas Linux/Windows.
+
+Prerequisitos:
+- `Homebrew` (macOS)
+- `php` >= 8.1 con `pdo_pgsql` habilitado
+- `composer`
+- `postgresql` (o una base de datos compatible; la configuración por defecto usa PostgreSQL)
+- `node` + `npm` (si vas a compilar assets frontend)
+
+Pasos:
+
+1. Clona el repositorio y entra en la carpeta:
+
+```bash
+git clone https://github.com/donatomarino/restaurantsapi-back.git
+cd restaurantsapi-back
+```
+
+2. Instala y arranca PostgreSQL (Homebrew):
+
+```bash
+brew install postgresql
+brew services start postgresql
+```
+
+3. Crea la base de datos y el usuario (ajusta nombre/clave si prefieres):
+
+```bash
+# Crear base de datos
+createdb restaurantsapi
+
+# (Opcional) crear usuario postgres con contraseña 'postgres' y darle permisos
+# Ejecuta en psql si necesitas crear/ajustar el usuario:
+# psql -c "CREATE USER postgres WITH PASSWORD 'postgres';"
+# psql -c "ALTER USER postgres WITH SUPERUSER;"
+```
+
+4. Configura variables de entorno:
+
+```bash
+cp .env.example .env
+# Edita .env y ajusta las variables DB_* si es necesario. Valores por defecto recomendados:
+# DB_CONNECTION=pgsql
+# DB_HOST=127.0.0.1
+# DB_PORT=5432
+# DB_DATABASE=restaurantsapi
+# DB_USERNAME=postgres
+# DB_PASSWORD=postgres
+```
+
+5. Instala dependencias PHP y de Node (si aplica):
+
+```bash
+composer install --prefer-dist --no-interaction
+npm install
+# (Opcional) compilar assets
+npm run build
+```
+
+6. Ajusta permisos en `storage` y `bootstrap/cache`:
+
+```bash
+chmod -R 775 storage bootstrap/cache
+sudo chown -R $(whoami):$(id -gn) storage bootstrap/cache
+```
+
+7. Genera la `APP_KEY`, ejecuta migraciones y seeders:
+
+```bash
+php artisan key:generate
+php artisan migrate --seed
+```
+
+8. Ejecuta la aplicación localmente:
+
+```bash
+php artisan serve --host=127.0.0.1 --port=8000
+# La API estará disponible en: http://127.0.0.1:8000
+```
+
+Notas:
+- Si usas MySQL u otra BD, ajusta `DB_CONNECTION` y las variables en `.env`.
+- En macOS es común usar `brew services start postgresql` para mantener Postgres en segundo plano.
+- Si encuentras errores de conexión revisa que `DB_HOST` apunte a `127.0.0.1` y que el servicio de Postgres esté activo.
+
 
 ## 🧪 Testing
 
