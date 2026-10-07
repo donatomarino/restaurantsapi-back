@@ -2,9 +2,9 @@
 
 Una API RESTful desarrollada en Laravel para la gestión de restaurantes. Incluye operaciones CRUD completas, autenticación con Laravel Sanctum, documentación automática con Swagger y pruebas automatizadas.
 
-## 🚀 Despliegue en Render.com
+## 🚀 Despliegue
 
-- **URL:** https://restaurantsapi-back-1.onrender.com
+- **URL:** https://restaurantsapi-front.vercel.app/
 
 ## 📋 Características
 
